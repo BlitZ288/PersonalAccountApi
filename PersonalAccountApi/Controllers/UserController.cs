@@ -22,6 +22,13 @@ namespace PersonalAccountApi.Controllers
 
             return result;
         }
+        [HttpGet]
+        public Result<User> GetUserById(int idUser)
+        {
+            var resutl = userService.GetUserById(idUser);
+
+            return resutl;
+        }
         [HttpPost]
         public void RemoveUserById(int idUser)
         {

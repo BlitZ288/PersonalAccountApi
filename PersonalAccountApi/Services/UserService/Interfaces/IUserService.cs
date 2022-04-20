@@ -10,6 +10,7 @@ namespace PersonalAccountApi.Services.UserService.Interfaces
         void RemoveUser(int idUser);
         void UpdateUser(User user);
         Result<IEnumerable<User>> GetAllUser();
+        Result<User> GetUserById(int idUser);
 
 
     }

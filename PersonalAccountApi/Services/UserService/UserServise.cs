@@ -18,6 +18,10 @@ namespace PersonalAccountApi.Services.UserService
         {
             return new Result<IEnumerable<User>>() { Data = unitOfWork.Users.GetAll() };
         }
+        public Result<User> GetUserById(int idUser)
+        {
+            return new Result<User>() { Data = unitOfWork.Users.GetById(idUser) };
+        }
 
         public Result<User> LoginUser(string login, string password)
         {

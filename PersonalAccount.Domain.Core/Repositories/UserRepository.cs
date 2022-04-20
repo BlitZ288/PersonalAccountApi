@@ -22,6 +22,11 @@ namespace PersonalAccount.Domain.Core.Repositories
             var user = this.context.Users.FirstOrDefault(user => user.name == login);
             return user;
         }
+        public User GetById(int idUser)
+        {
+            var user = this.context.Users.Find(idUser);
+            return user;
+        }
 
         public IEnumerable<User> GetAll()
         {
