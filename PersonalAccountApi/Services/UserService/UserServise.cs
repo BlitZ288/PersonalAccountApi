@@ -33,7 +33,7 @@ namespace PersonalAccountApi.Services.UserService
                 {
                     return new Result<User>() { Data = null, Error = "Пользователя с таким логином не существует" };
                 }
-                if (user.password != password)
+                if (user.Password != password)
                 {
                     return new Result<User>() { Data = null, Error = "Неправильно введен пароль " };
                 }
@@ -48,7 +48,7 @@ namespace PersonalAccountApi.Services.UserService
 
         public Result<bool> RegisterUser(User user)
         {
-            var newUser = unitOfWork.Users.GetByLogin(user.name);
+            var newUser = unitOfWork.Users.GetByLogin(user.Name);
             if (newUser == null)
             {
                 unitOfWork.Users.Create(user);

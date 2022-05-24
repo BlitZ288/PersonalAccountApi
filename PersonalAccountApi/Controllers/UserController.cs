@@ -39,5 +39,10 @@ namespace PersonalAccountApi.Controllers
         {
             userService.UpdateUser(user);
         }
+        [HttpPost]
+        public void CreateUser(User user)
+        {
+            userService.RegisterUser(user);
+        }
     }
 }

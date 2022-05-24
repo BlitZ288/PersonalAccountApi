@@ -19,7 +19,7 @@ namespace PersonalAccount.Domain.Core.Repositories
         }
         public User? GetByLogin(string login)
         {
-            var user = this.context.Users.FirstOrDefault(user => user.name == login);
+            var user = this.context.Users.FirstOrDefault(user => user.Name == login);
             return user;
         }
         public User GetById(int idUser)
@@ -36,6 +36,7 @@ namespace PersonalAccount.Domain.Core.Repositories
         public void Create(User item)
         {
             this.context.Users.Add(item);
+            this.context.SaveChanges();
         }
 
         public void Delete(int id)
@@ -45,11 +46,13 @@ namespace PersonalAccount.Domain.Core.Repositories
             {
                 this.context.Users.Remove(user);
             }
+            this.context.SaveChanges();
         }
 
         public void Update(User item)
         {
-            this.context.Entry(item).State = EntityState.Modified;
+            this.context.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            this.context.SaveChanges();
         }
 
 
