@@ -14,20 +14,33 @@ namespace PersonalAccountApi.Services.UserService
             unitOfWork = new UnitOfWork();
         }
 
-        public Result<IEnumerable<User>> GetAllUser()
+        public Result<IEnumerable<User>> GetAllUser(HttpRequest request)
         {
-            return new Result<IEnumerable<User>>() { Data = unitOfWork.Users.GetAll() };
+            var users = unitOfWork.Users.GetAll().Select(x => new User()
+            {
+                UserId = x.UserId,
+                CountVisit = x.CountVisit,
+                Discription = x.Discription,
+                LastName = x.LastName,
+                Name = x.Name,
+                Password = x.Password,
+                ImageName = x.ImageName,
+                ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", request.Scheme, request.Host, request.PathBase, x.ImageName)
+            }).ToList();
+
+            return new Result<IEnumerable<User>>() { Data = users };
         }
         public Result<User> GetUserById(int idUser)
         {
             return new Result<User>() { Data = unitOfWork.Users.GetById(idUser) };
         }
 
-        public Result<User> LoginUser(string login, string password)
+        public Result<User> LoginUser(string login, string password, HttpRequest request)
         {
             try
             {
                 var user = unitOfWork.Users.GetByLogin(login);
+                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", request.Scheme, request.Host, request.PathBase, user.ImageName);
 
                 if (user == null)
                 {
@@ -46,15 +59,18 @@ namespace PersonalAccountApi.Services.UserService
             }
         }
 
-        public Result<bool> RegisterUser(User user)
+        public Result<User> RegisterUser(User user, HttpRequest request)
         {
             var newUser = unitOfWork.Users.GetByLogin(user.Name);
             if (newUser == null)
             {
                 unitOfWork.Users.Create(user);
-                return new Result<bool> { Data = true, Error = null };
+                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", request.Scheme, request.Host, request.PathBase, user.ImageName);
+
+
+                return new Result<User> { Data = user, Error = null };
             }
-            return new Result<bool> { Data = false, Error = "Пользователя с таким логином уже существует" };
+            return new Result<User> { Data = null, Error = "Пользователя с таким логином уже существует" };
         }
 
         public void RemoveUser(int idUser)
@@ -65,6 +81,7 @@ namespace PersonalAccountApi.Services.UserService
         public void UpdateUser(User user)
         {
             unitOfWork.Users.Update(user);
+
         }
     }
 }

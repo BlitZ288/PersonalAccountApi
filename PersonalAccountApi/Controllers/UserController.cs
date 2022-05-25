@@ -18,7 +18,8 @@ namespace PersonalAccountApi.Controllers
         [HttpGet]
         public Result<IEnumerable<User>> GetAll()
         {
-            var result = userService.GetAllUser();
+
+            var result = userService.GetAllUser(Request);
 
             return result;
         }
@@ -42,7 +43,9 @@ namespace PersonalAccountApi.Controllers
         [HttpPost]
         public void CreateUser(User user)
         {
-            userService.RegisterUser(user);
+            userService.RegisterUser(user, Request);
         }
+
+
     }
 }

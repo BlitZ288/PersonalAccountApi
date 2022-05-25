@@ -1,5 +1,8 @@
+using Microsoft.Extensions.FileProviders;
+using PersonalAccount.Domain.Core.Context;
 using PersonalAccountApi.Services.UserService;
 using PersonalAccountApi.Services.UserService.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(
@@ -16,10 +19,11 @@ builder.Services.AddCors(
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddDbContext<PersonalContext>();
 
 
 builder.Services.AddTransient<IUserService, UserServise>();
@@ -30,6 +34,12 @@ if (app.Environment.IsDevelopment())
 {
 
 }
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Images")),
+    RequestPath = "/Images"
+});
 
 app.UseHttpsRedirection();
 

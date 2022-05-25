@@ -1,7 +1,6 @@
 ﻿using PersonalAccount.Domain.Core.Context;
 using PersonalAccount.Domain.Core.Interfaces;
 using PersonalAccount.Domain.Core.Model;
-using System.Data.Entity;
 
 namespace PersonalAccount.Domain.Core.Repositories
 {
@@ -22,6 +21,12 @@ namespace PersonalAccount.Domain.Core.Repositories
             var user = this.context.Users.FirstOrDefault(user => user.Name == login);
             return user;
         }
+
+        public object Select()
+        {
+            throw new NotImplementedException();
+        }
+
         public User GetById(int idUser)
         {
             var user = this.context.Users.Find(idUser);
@@ -51,7 +56,7 @@ namespace PersonalAccount.Domain.Core.Repositories
 
         public void Update(User item)
         {
-            this.context.Entry(item).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+            this.context.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             this.context.SaveChanges();
         }
 
