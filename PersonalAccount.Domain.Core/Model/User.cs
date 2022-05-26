@@ -12,14 +12,14 @@ namespace PersonalAccount.Domain.Core.Model
         public string Password { get; set; }
         public int CountVisit { get; set; }
 
-        public string Discription { get; set; }
+        public string? Discription { get; set; }
         public string ImageName { get; set; }
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }
 
         [NotMapped]
-        [Required(ErrorMessage = "Не указан электронный адрес", AllowEmptyStrings = true)]
+        [Required(AllowEmptyStrings = true)]
         public string ImageSrc { get; set; }
         public User()
         {

@@ -40,16 +40,19 @@ namespace PersonalAccountApi.Services.UserService
             try
             {
                 var user = unitOfWork.Users.GetByLogin(login);
-                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", request.Scheme, request.Host, request.PathBase, user.ImageName);
 
                 if (user == null)
                 {
+
                     return new Result<User>() { Data = null, Error = "Пользователя с таким логином не существует" };
                 }
                 if (user.Password != password)
                 {
                     return new Result<User>() { Data = null, Error = "Неправильно введен пароль " };
                 }
+                user.CountVisit += 1;
+                unitOfWork.Users.Update(user);
+                user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", request.Scheme, request.Host, request.PathBase, user.ImageName);
 
                 return new Result<User>() { Data = user, Error = null };
             }
@@ -78,8 +81,9 @@ namespace PersonalAccountApi.Services.UserService
             unitOfWork.Users.Delete(idUser);
         }
 
-        public void UpdateUser(User user)
+        public void UpdateUser(User user, HttpRequest request)
         {
+            user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", request.Scheme, request.Host, request.PathBase, user.ImageName);
             unitOfWork.Users.Update(user);
 
         }

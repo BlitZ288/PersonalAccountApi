@@ -56,7 +56,7 @@ namespace PersonalAccount.Domain.Core.Repositories
 
         public void Update(User item)
         {
-            this.context.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            this.context.Update(item);
             this.context.SaveChanges();
         }
 

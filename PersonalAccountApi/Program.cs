@@ -5,6 +5,7 @@ using PersonalAccountApi.Services.UserService.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddCors(
    options =>
    {
@@ -29,7 +30,9 @@ builder.Services.AddDbContext<PersonalContext>();
 builder.Services.AddTransient<IUserService, UserServise>();
 
 var app = builder.Build();
+
 app.UseCors("default");
+
 if (app.Environment.IsDevelopment())
 {
 

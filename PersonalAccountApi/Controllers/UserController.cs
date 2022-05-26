@@ -10,9 +10,13 @@ namespace PersonalAccountApi.Controllers
     public class UserController : ControllerBase
     {
         IUserService userService;
-        public UserController(IUserService userService)
+        private readonly IWebHostEnvironment hostEnvironment;
+
+        public UserController(IUserService userService, IWebHostEnvironment hostEnvironment)
         {
             this.userService = userService;
+            this.hostEnvironment = hostEnvironment;
+
         }
 
         [HttpGet]
@@ -30,20 +34,39 @@ namespace PersonalAccountApi.Controllers
 
             return resutl;
         }
-        [HttpPost]
+        [HttpGet]
         public void RemoveUserById(int idUser)
         {
             userService.RemoveUser(idUser);
         }
         [HttpPost]
-        public void UpdateUser(User user)
+        public async Task UpdateUser([FromForm] User user)
         {
-            userService.UpdateUser(user);
+            user.ImageName = await SaveImage(user.ImageFile);
+
+            userService.UpdateUser(user, Request);
         }
         [HttpPost]
         public void CreateUser(User user)
         {
             userService.RegisterUser(user, Request);
+        }
+
+        [NonAction]
+        public async Task<string> SaveImage(IFormFile imageFile)
+        {
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+
+            var imgaePath = Path.Combine(hostEnvironment.ContentRootPath, "Images", imageName);
+
+            using (var fileStream = new FileStream(imgaePath, FileMode.Create))
+            {
+
+                await imageFile.CopyToAsync(fileStream);
+            }
+            return imageName;
         }
 
 
