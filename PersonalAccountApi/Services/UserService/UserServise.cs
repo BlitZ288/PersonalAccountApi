@@ -34,6 +34,14 @@ namespace PersonalAccountApi.Services.UserService
         {
             return new Result<User>() { Data = unitOfWork.Users.GetById(idUser) };
         }
+        public Result<User> GetUserByName(string userName, HttpRequest request)
+        {
+            var user = unitOfWork.Users.GetByLogin(userName);
+            user.CountVisit += 1;
+            user.ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", request.Scheme, request.Host, request.PathBase, user.ImageName);
+
+            return new Result<User>() { Data = user };
+        }
 
         public Result<User> LoginUser(string login, string password, HttpRequest request)
         {

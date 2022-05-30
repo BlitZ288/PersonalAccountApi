@@ -11,6 +11,7 @@ namespace PersonalAccountApi.Services.UserService.Interfaces
         void UpdateUser(User user, HttpRequest request);
         Result<IEnumerable<User>> GetAllUser(HttpRequest request);
         Result<User> GetUserById(int idUser);
+        Result<User> GetUserByName(string userName, HttpRequest request);
 
 
     }

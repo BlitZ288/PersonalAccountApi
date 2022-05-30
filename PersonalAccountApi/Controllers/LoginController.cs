@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using PersonalAccount.Domain.Core.Model;
 using PersonalAccountApi.Infrastructure.ResultService;
 using PersonalAccountApi.Services.UserService.Interfaces;
+using System.Security.Claims;
 
 namespace PersonalAccountApi.Controllers
 {
@@ -18,9 +21,33 @@ namespace PersonalAccountApi.Controllers
         }
 
         [HttpGet]
-        public Result<User> LoginUser(string login, string password)
+        public Result<User> GetMe()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+
+                return userService.GetUserByName(User.Identity.Name, Request);
+            }
+            return new Result<User>() { Data = null, Error = "Пользователь не аутифицирован" };
+        }
+        [HttpGet]
+        public async void Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        }
+
+        [HttpGet]
+        public async Task<Result<User>> LoginUser(string login, string password, bool remember)
+        {
+            login = login.Trim();
+            password = password.Trim();
             var result = userService.LoginUser(login, password, Request);
+
+            if (result.Data != null && remember)
+            {
+                await Authenticate(login);
+            }
 
             return result;
         }
@@ -51,6 +78,18 @@ namespace PersonalAccountApi.Controllers
             return imageName;
         }
 
+        private async Task Authenticate(string userName)
+        {
+            // создаем один claim
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+            };
+            // создаем объект ClaimsIdentity
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            // установка аутентификационных куки
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        }
     }
 
 }

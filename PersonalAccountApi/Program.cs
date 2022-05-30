@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using PersonalAccount.Domain.Core.Context;
 using PersonalAccountApi.Services.UserService;
@@ -14,9 +15,13 @@ builder.Services.AddCors(
        {
            policy.WithOrigins("http://localhost:3000")
                .AllowAnyHeader()
+               .AllowCredentials()
                .AllowAnyMethod();
        });
    });
+
+
+
 
 // Add services to the container.
 
@@ -25,6 +30,10 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<PersonalContext>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(optinons =>
+{
+    optinons.Cookie.SameSite = SameSiteMode.None;
+});
 
 
 builder.Services.AddTransient<IUserService, UserServise>();
@@ -47,6 +56,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
