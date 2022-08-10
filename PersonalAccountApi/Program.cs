@@ -18,6 +18,7 @@ builder.Services.AddCors(
                .AllowCredentials()
                .AllowAnyMethod();
        });
+       ///dasdasd
    });
 
 
