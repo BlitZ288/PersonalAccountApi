@@ -41,7 +41,7 @@ builder.Services.AddTransient<IUserService, UserServise>();
 
 var app = builder.Build();
 
-app.UseCors("default");
+app.UseCors("dddd");
 
 if (app.Environment.IsDevelopment())
 {
